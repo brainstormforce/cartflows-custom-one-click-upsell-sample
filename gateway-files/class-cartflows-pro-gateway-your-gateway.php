@@ -229,12 +229,10 @@ class Cartflows_Pro_Gateway_Your_Gateway {
 	 */
 	public function add_subscription_payment_meta( $subscription, $order, $offer_product ) {
 
-		if ( $this->$key === $order->get_payment_method() ) {
-
-			$subscription_id = $subscription->get_id();
-
-			update_post_meta( $subscription_id, 'your_transaction_source_id_key', $order->get_meta( 'your_transaction_source_id_key', true ) );
-			update_post_meta( $subscription_id, 'your_transaction_customer_id_key', $order->get_meta( 'your_transaction_customer_id_key', true ) );
+		if ( $this->key === $order->get_payment_method() ) {
+			$subscription->update_meta_data( 'your_transaction_source_id_key', $order->get_meta( 'your_transaction_source_id_key' ) );
+			$subscription->update_meta_data( 'your_transaction_customer_id_key', $order->get_meta( 'your_transaction_customer_id_key' ) );
+			$subscription->save();
 		}
 	}
 
