@@ -16,11 +16,14 @@ if ( ! class_exists( 'Cartflows_Cgi_Loader' ) ) {
 		 * Member Variable
 		 *
 		 * @var instance
+		 * @since 1.0.0
 		 */
 		private static $instance = null;
 
 		/**
-		 *  Initiator
+		 * Initiator: Get the instance of this class.
+		 * 
+		 * @since 1.0.0
 		 */
 		public static function get_instance() {
 
@@ -34,6 +37,8 @@ if ( ! class_exists( 'Cartflows_Cgi_Loader' ) ) {
 
 		/**
 		 * Constructor
+		 * 
+		 * @since 1.0.0
 		 */
 		public function __construct() {
 
@@ -45,12 +50,7 @@ if ( ! class_exists( 'Cartflows_Cgi_Loader' ) ) {
 
 			add_action( 'plugins_loaded', array( $this, 'load_plugin' ), 99 );
 
-			add_action( 'wp_loaded', array( $this, 'add_gateway_integration_file') );
-		}
-
-		public function add_gateway_integration_file(){
-
-			add_filter( 'cartflows_offer_supported_payment_gateways', array( $this, 'your_function_name' ) );
+			add_action( 'wp_loaded', array( $this, 'register_gateway_integration_files') );
 		}
 
 		/**
@@ -71,12 +71,24 @@ if ( ! class_exists( 'Cartflows_Cgi_Loader' ) ) {
 		}
 
 		/**
+		 * Register the custom gateway integration classes and files.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @return void
+		 */
+		public function register_gateway_integration_files(){
+
+			add_filter( 'cartflows_offer_supported_payment_gateways', array( $this, 'add_custom_gateway_integration' ) );
+		}
+
+		/**
 		 * Add new payment gateway in Supported Gateways.
 		 *
 		 * @param array $supported_gateways Supported Gateways by CartFlows.
-		 * @return array.
+		 * @return array $supported_gateways Modified array of supported gateways.
 		 */
-		function your_function_name( $supported_gateways ){
+		public function add_custom_gateway_integration( $supported_gateways ){
 			
 			$supported_gateways['your_gateway_key'] = array(
 				'file'  => 'your_gateway_key.php', // Your Custom code's file name
@@ -84,21 +96,40 @@ if ( ! class_exists( 'Cartflows_Cgi_Loader' ) ) {
 				'path'  => CARTFLOWS_CGIS_DIR . 'gateway-files/class-cartflows-pro-gateway-tour-gateway.php', // Full File path where you have stored.
 			);
 
-			return $supported_gateways; // Adding the payment gateway name.
+			/**
+			 * If you want to add more gateways to the list, then simply copy the above array and change it's values.
+			 * 
+			 * Example:
+			 * 
+			 * $supported_gateways['your_gateway_key'] = array(
+			 *	'file'  => 'your_gateway_key.php', // Your Custom code's file name
+			 *	'class' => 'Cartflows_Pro_Gateway_Your_Gateway',   // Class name used in the Custom Code's file.
+			 *	'path'  => CARTFLOWS_CGIS_DIR . 'gateway-files/class-cartflows-pro-gateway-tour-gateway.php', // Full File path where you have stored.
+			 * );
+			 *   
+			 * */ 
+			
+
+			// Adding the payment gateway name by returning the modified array to CartFlows.
+			return $supported_gateways; 
 		}
 
 		/**
 		 * Activation Reset
+		 * 
+		 * @since 1.0.0
 		 */
 		public function activation_reset() {
-
-			
+			// Write a code which you want to execute while activating this plugin.			
 		}
 
 		/**
 		 * Deactivation Reset
+		 * 
+		 * @since 1.0.0
 		 */
 		public function deactivation_reset() {
+			// Write a code which you want to execute while de-activating this plugin.
 		}
 
 		/**
